@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 require('dotenv').config({path: './.env'});
 
 const mongoDb = process.env.MONGO_STRING;
@@ -28,6 +29,7 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
