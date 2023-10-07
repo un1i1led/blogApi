@@ -54,7 +54,7 @@ function paginatedComments(model) {
         }
 
         try {
-            results.results = await model.find({ post: req.params.postid }).populate('user').limit(limit).skip(startIndex).exec()
+            results.results = await model.find({ post: req.params.postid }).populate('user', 'name').limit(limit).skip(startIndex).exec()
             res.paginatedComments = results;
             next()
         } catch (e) {
