@@ -1,20 +1,40 @@
 const User = require('../models/user');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
 
 exports.user_create_post = [
     body('name')
         .trim()
         .not().isEmpty()
-        .withMessage('name must be specified')
+        .withMessage('Name must be specified')
         .escape(),
     body('username')
         .trim()
         .not().isEmpty()
-        .withMessage('name must be specified')
+        .withMessage('Username must be specified')
         .isAlphanumeric()
         .withMessage('username has non-alphanumeric characters')
         .escape(),
+    body('username').custom(async value => {
+        const user = await User.find({username: value }).exec();
+
+        if (user.length > 0) {
+            throw new Error('Username already in use');
+        } else {
+            return true;
+        }
+    }),
+    body('email')
+        .isEmail()
+        .withMessage('Email must be a valid email'),
+    body('email').custom(async value => {
+        const user = await User.find({ email: value }).exec();
+
+        if (user.length > 0) {
+            throw new Error('Email already in use');
+        }
+    }),
     body('password')
         .trim()
         .isLength({ min: 6 })
@@ -35,8 +55,27 @@ exports.user_create_post = [
                 errors:errors.array()
             })
         } else {
-            res.json({
-                data: 'worked'
+            bcrypt.hash(req.body.password, 10, async(err, hashedPassword) => {
+                let arr = []
+                try {
+                    const user = new User({
+                        email: req.body.email,
+                        name: req.body.name,
+                        username: req.body.username,
+                        password: hashedPassword,
+                        isAuthor: false
+                    });
+
+                    await user.save();
+                    res.json({
+                        data: '200'
+                    })
+                } catch {
+                    arr.push(err);
+                    res.json({
+                        errors: arr
+                    })
+                }
             })
         }
 
