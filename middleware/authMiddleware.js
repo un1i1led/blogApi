@@ -10,7 +10,7 @@ const requireAuth = (req, res, next) => {
             if (err) {
                 return res.json({ msg: 'token invalid' });
             } else {
-                return res.json({ msg: 'has token' });
+                next();
             }
         })
     }
