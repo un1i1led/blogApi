@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { response } = require('express');
+const { requireAuth, requireNotAuth } = require('../middleware/authMiddleware');
 
 exports.user_create_post = [
     body('name')
@@ -92,9 +92,9 @@ exports.user_login = [
         .not().isEmpty()
         .withMessage('You must enter a password'),
     body('email').custom(async value => {
-        const user = await User.find({ email: value }).exec();
+        const user = await User.findOne({ email: value }).exec();
 
-        if (user.length < 0) {
+        if (!user) {
             throw new Error('There is no account associated with that email');
         } else {
             return true;
@@ -112,14 +112,14 @@ exports.user_login = [
             const user = await User.findOne({ email: req.body.email }).exec();
             bcrypt.compare(req.body.password, user.password).then(function(result) {
                 if (result) {
-                    jwt.sign({user}, 'secretkey', { expiresIn: '1h' }, (err, token) => {
+                    jwt.sign({user}, 'secretkey', { expiresIn: '1d' }, (err, token) => {
                         res.json({
                             token
                         });
                     });
                 } else {
                     res.json({
-                        errors: {msg: 'Password or Email is incorrect'}
+                        errors: [{msg: 'Password or Email is incorrect'}]
                     })
                 }
             })
@@ -127,19 +127,7 @@ exports.user_login = [
     })
 ]
 
-function verifyToken(req, res, next) {
-    const bearerHeader = req.headers['authorization'];
+exports.user_login_get = [requireNotAuth, (req, res) => {
+    res.json({ msg: 'authorized' });
+}]
 
-    if (typeof bearerHeader !== 'undefined') {
-
-        const bearer = bearerHeader.split(' ');
-        const bearerToken = bearer[1];
-        req.token = bearerToken;
-
-        next();
-    } else {
-        res.json({
-            msg: 'Forbidden'
-        });
-    }
-}
