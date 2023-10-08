@@ -6,7 +6,6 @@ const postController = require('../controllers/postController');
 const userController = require('../controllers/userController');
 const tagController = require('../controllers/tagController');
 
-router.post('/posts', postController.post_add_post);
 router.get('/posts', postController.post_list_get);
 router.get('/posts/:postid', postController.post_get);
 
@@ -20,6 +19,10 @@ router.post('/signup', userController.user_create_post);
 router.get('/posts/fromtag/:tag', postController.postTag_get);
 
 router.get('/tagslider', tagController.tag_slider_list);
+
+// login routes
+
+router.post('/login', userController.user_login);
 
 
 /* GET home page. */
