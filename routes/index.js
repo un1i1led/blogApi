@@ -21,7 +21,7 @@ router.get('/posts/fromtag/:tag', postController.postTag_get);
 router.get('/tagslider', tagController.tag_slider_list);
 
 // login routes
-
+router.get('/login', userController.user_login_get);
 router.post('/login', userController.user_login);
 
 
