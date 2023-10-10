@@ -131,3 +131,6 @@ exports.user_login_get = [requireNotAuth, (req, res) => {
     res.json({ msg: 'authorized' });
 }]
 
+exports.verify_token_get = [requireAuth, (req, res) => {
+    res.json({ msg: 'authorized' });
+}]
