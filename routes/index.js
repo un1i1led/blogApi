@@ -14,6 +14,8 @@ router.get('/posts/:postid/comments', paginatedComments(Comment), (req, res) => 
     res.json(res.paginatedComments);
 })
 
+router.post('/posts/:postid/comment', postController.post_add_comment);
+
 router.post('/signup', userController.user_create_post);
 
 router.get('/posts/fromtag/:tag', postController.postTag_get);
@@ -24,6 +26,9 @@ router.get('/tagslider', tagController.tag_slider_list);
 router.get('/login', userController.user_login_get);
 router.post('/login', userController.user_login);
 
+// check for token
+
+router.get('/token', userController.verify_token_get);
 
 /* GET home page. */
 router.get('/', (req, res) => {
@@ -57,7 +62,7 @@ function paginatedComments(model) {
         }
 
         try {
-            results.results = await model.find({ post: req.params.postid }).populate('user', 'name').limit(limit).skip(startIndex).exec()
+            results.results = await model.find({ post: req.params.postid }).sort({ date: -1 }).populate('user', 'name').skip(startIndex).limit(limit).exec()
             res.paginatedComments = results;
             next()
         } catch (e) {
