@@ -6,8 +6,11 @@ const postController = require('../controllers/postController');
 const userController = require('../controllers/userController');
 const tagController = require('../controllers/tagController');
 
+// Posts routes
+
 router.get('/posts', postController.post_list_get);
 router.get('/posts/:postid', postController.post_get);
+router.post('/posts/new', postController.add_post_post);
 
 // post comments
 router.get('/posts/:postid/comments', paginatedComments(Comment), (req, res) => {
