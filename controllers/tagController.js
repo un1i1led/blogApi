@@ -8,3 +8,11 @@ exports.tag_slider_list = asyncHandler(async(req, res, next) => {
         tags: tags
     })
 })
+
+exports.tag_list_get = asyncHandler(async(req, res, next) => {
+    const tags = await Tag.find({}).exec();
+
+    res.json({
+        tags: tags
+    })
+}) 
