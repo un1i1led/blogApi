@@ -21,7 +21,7 @@ exports.post_list_get = [paginateAllPosts, (req, res) => {
 
 exports.post_get = [checkAuth, asyncHandler(async(req, res, next) => {
     const [post, postComments] = await Promise.all([
-        Post.findById(req.params.postid).exec(),
+        Post.findById(req.params.postid).populate('user tags', 'name username').exec(),
         Comment.find({ post: req.params.id}).sort('-date').exec()
     ]);
 
@@ -122,8 +122,11 @@ exports.add_post_post = [
                 } else {
                     tag = res.locals.tagId;
                 }
+
+                const user = await User.findOne({ username: res.locals.username }, '_id').exec();
     
                 const newPost = new Post({
+                    user: user._id,
                     title: req.body.title,
                     body: req.body.body,
                     date: new Date(),
