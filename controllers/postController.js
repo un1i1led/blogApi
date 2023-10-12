@@ -7,13 +7,17 @@ const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const { checkAuth, requireAuth } = require('../middleware/authMiddleware');
 const { findTagMid } = require('../middleware/findTagMid');
+const { paginateTagPosts, paginateAllPosts } = require('../middleware/paginate');
 
-exports.post_list_get = asyncHandler(async(req, res, next) => {
-    const allPosts = await Post.find({}).populate('tags').sort('-date').exec();
+exports.post_list_get = [paginateAllPosts, (req, res) => {
+    if (!res.locals.results) {
+        res.json('didnt work')
+    }
+
     res.json({
-        posts: allPosts,
+        results: res.locals.results.results
     })
-});
+}]
 
 exports.post_get = [checkAuth, asyncHandler(async(req, res, next) => {
     const [post, postComments] = await Promise.all([
@@ -29,15 +33,17 @@ exports.post_get = [checkAuth, asyncHandler(async(req, res, next) => {
     })
 })]
 
-exports.postTag_get = asyncHandler(async(req, res, next) => {
-    const tag = await Tag.findOne({ name_lowered: req.params.tag });
-    const posts = await Post.find({ tags: tag._id }).populate('tags').exec();
+exports.postTag_get = [paginateTagPosts, (req, res) => {
+
+    if (!res.locals.tag) {
+        res.json('didnt work')
+    }
 
     res.json({
-        params: tag,
-        posts: posts
+        tagId: res.locals.tag._id,
+        results: res.locals.results.results
     })
-})
+}]
 
 exports.post_add_comment = [
     requireAuth,
