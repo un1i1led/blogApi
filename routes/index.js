@@ -23,7 +23,11 @@ router.post('/signup', userController.user_create_post);
 
 router.get('/posts/fromtag/:tag', postController.postTag_get);
 
+// Category/Tag routes
+
 router.get('/tagslider', tagController.tag_slider_list);
+
+router.get('/tags/all', tagController.tag_list_get);
 
 // login routes
 router.get('/login', userController.user_login_get);
