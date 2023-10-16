@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const Comment = require('../models/comment');
+const upload = require('../utils/cloudinary');
 
 const postController = require('../controllers/postController');
 const userController = require('../controllers/userController');
@@ -10,7 +11,13 @@ const tagController = require('../controllers/tagController');
 
 router.get('/posts', postController.post_list_get);
 router.get('/posts/:postid', postController.post_get);
+
+// new post
+
 router.post('/posts/new', postController.add_post_post);
+router.post('/posts/new/image', upload.upload.single('image'), (req, res) => {
+    res.json({url: req.file.path })
+})
 
 // post comments
 router.get('/posts/:postid/comments', paginatedComments(Comment), (req, res) => {
