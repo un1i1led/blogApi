@@ -131,7 +131,8 @@ exports.add_post_post = [
                     body: req.body.body,
                     date: new Date(),
                     published: req.body.published,
-                    tags: tag
+                    tags: tag,
+                    img: req.body.pathUrl
                 })
     
                 await newPost.save();
