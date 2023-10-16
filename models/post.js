@@ -8,7 +8,8 @@ const PostSchema = new Schema({
     body: { type: String, required: true },
     date: { type: Date, required: true },
     published: { type: Boolean, required: true },
-    tags: { type: Schema.Types.ObjectId, ref: 'Tag', required: true }
+    tags: { type: Schema.Types.ObjectId, ref: 'Tag', required: true },
+    img: { type: String, required: false }
 })
 
 PostSchema.virtual('url').get(function() {
