@@ -8,7 +8,7 @@ const requireAuth = (req, res, next) => {
     } else {
         jwt.verify(token, 'secretkey', (err, decoded) => {
             if (err) {
-                return res.json({ msg: 'token invalid' });
+                return res.json({ msg: 'token invalid', username:'' });
             } else {
                 res.locals.username = jwt.decode(token).user.username;
                 next();
@@ -38,12 +38,15 @@ const checkAuth = (req, res, next) => {
 
     if (token == 'null') {
         res.locals.isAuth = false;
+        res.locals.username = '';
     } else {
         jwt.verify(token, 'secretkey', (err, decoded) => {
             if (err) {
                 res.locals.isAuth = false;
+                res.locals.username = '';
             } else {
                 res.locals.isAuth = true;
+                res.locals.username = jwt.decode(token).user.username;
             }
         })
     }
