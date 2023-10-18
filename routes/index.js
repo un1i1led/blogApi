@@ -54,6 +54,10 @@ router.get('/token', userController.verify_token_get);
 router.get('/user/:username', userController.user_profile_get);
 router.put('/user/:username', userController.user_change_image);
 
+// user image routes
+
+router.get('/user/:username/image', userController.user_image_get);
+
 /* GET home page. */
 router.get('/', (req, res) => {
     res.json({
@@ -86,7 +90,7 @@ function paginatedComments(model) {
         }
 
         try {
-            results.results = await model.find({ post: req.params.postid }).sort({ date: -1 }).populate('user', 'name').skip(startIndex).limit(limit).exec()
+            results.results = await model.find({ post: req.params.postid }).sort({ date: -1 }).populate('user', 'name img').skip(startIndex).limit(limit).exec()
             res.paginatedComments = results;
             next()
         } catch (e) {
