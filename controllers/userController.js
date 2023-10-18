@@ -148,3 +148,20 @@ exports.user_profile_get = [checkAuth, asyncHandler(async (req, res, next) => {
         username: res.locals.username
     })
 })]
+
+exports.user_change_image = [requireAuth, asyncHandler(async (req, res, next) => {
+    try {
+        const filter = { username: res.locals.username }
+        const update = { img: req.body.imgurl };
+
+        let doc = await User.findOneAndUpdate(filter, update);
+
+
+        res.json({
+            msg: 'worked'
+        })
+
+    } catch (e) {
+        res.json({errors: e})
+    }
+})]
