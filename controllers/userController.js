@@ -1,9 +1,11 @@
 const User = require('../models/user');
+const Post = require('../models/post');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { requireAuth, requireNotAuth } = require('../middleware/authMiddleware');
+const { checkAuth } = require('../middleware/authMiddleware');
 
 exports.user_create_post = [
     body('name')
@@ -65,7 +67,8 @@ exports.user_create_post = [
                         name: req.body.name,
                         username: req.body.username,
                         password: hashedPassword,
-                        isAuthor: false
+                        isAuthor: false,
+                        img: ''
                     });
 
                     await user.save();
@@ -132,5 +135,16 @@ exports.user_login_get = [requireNotAuth, (req, res) => {
 }]
 
 exports.verify_token_get = [requireAuth, (req, res) => {
-    res.json({ msg: 'authorized' });
+    res.json({ msg: 'authorized', username: res.locals.username });
 }]
+
+exports.user_profile_get = [checkAuth, asyncHandler(async (req, res, next) => {
+    const user = await User.findOne({ username: req.params.username }, 'name username img').exec();
+    const posts = await Post.find({ user: user._id, published: true }).sort('-date').exec()
+
+    res.json({
+        user: user,
+        posts: posts,
+        username: res.locals.username
+    })
+})]
