@@ -11,6 +11,7 @@ const tagController = require('../controllers/tagController');
 
 router.get('/posts', postController.post_list_get);
 router.get('/posts/:postid', postController.post_get);
+router.delete('/posts/:postid', postController.delete_post);
 
 // new post
 
@@ -30,6 +31,10 @@ router.post('/signup', userController.user_create_post);
 
 router.get('/posts/fromtag/:tag', postController.postTag_get);
 
+// spotlight
+
+router.get('/spotlight', postController.spotlight_get);
+
 // Category/Tag routes
 
 router.get('/tagslider', tagController.tag_slider_list);
@@ -43,6 +48,10 @@ router.post('/login', userController.user_login);
 // check for token
 
 router.get('/token', userController.verify_token_get);
+
+// user profile routes
+
+router.get('/user/:username', userController.user_profile_get);
 
 /* GET home page. */
 router.get('/', (req, res) => {
