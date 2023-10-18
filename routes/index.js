@@ -52,6 +52,7 @@ router.get('/token', userController.verify_token_get);
 // user profile routes
 
 router.get('/user/:username', userController.user_profile_get);
+router.put('/user/:username', userController.user_change_image);
 
 /* GET home page. */
 router.get('/', (req, res) => {
