@@ -8,7 +8,7 @@ const requireAuth = (req, res, next) => {
     } else {
         jwt.verify(token, 'secretkey', (err, decoded) => {
             if (err) {
-                return res.json({ msg: 'token invalid', username:'' });
+                return res.json({ msg: err, username:'' });
             } else {
                 res.locals.username = jwt.decode(token).user.username;
                 next();
