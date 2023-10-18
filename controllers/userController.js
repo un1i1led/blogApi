@@ -165,3 +165,14 @@ exports.user_change_image = [requireAuth, asyncHandler(async (req, res, next) =>
         res.json({errors: e})
     }
 })]
+
+exports.user_image_get = [requireAuth, asyncHandler(async (req, res, next) => {
+    
+    try {
+        const user = await User.findOne({ username: res.locals.username }, 'img').exec();
+
+        res.json({img: user})
+    } catch (e) {
+        res.json({errors: e})
+    }
+})]
