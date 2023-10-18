@@ -149,3 +149,22 @@ exports.add_post_post = [
         }
     })
 ]
+
+exports.spotlight_get = asyncHandler(async (req, res, next) => {
+    const post = await Post.findOne({ published: true }).sort('-date').populate('tags').exec();
+
+    res.json({
+        post: post
+    })
+})
+
+exports.delete_post = asyncHandler(async (req, res, next) => {
+    try {
+        const deletedPost = await Post.deleteOne({ _id: req.params.postid});
+        const deletedComments = await Comment.deleteMany({ post: req.params.postid });
+
+        res.json({ msg: 'deleted' });
+    } catch (e) {
+        res.json({ error: e });
+    }
+})
