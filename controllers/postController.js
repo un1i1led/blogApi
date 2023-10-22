@@ -61,7 +61,7 @@ exports.post_add_comment = [
         } else {
             let arr = [];
             try {
-                const userId = await User.findOne({ username: res.locals.username }).select('_id name');
+                const userId = await User.findOne({ username: res.locals.username }).select('_id name img');
                 const newComment = new Comment({
                 user: userId._id,
                 post: req.params.postid,
@@ -73,7 +73,8 @@ exports.post_add_comment = [
 
                 res.json({
                     comment: newComment,
-                    name: userId.name
+                    name: userId.name,
+                    img: userId.img
                 })
 
             } catch {
