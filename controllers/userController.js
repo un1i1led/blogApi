@@ -68,7 +68,7 @@ exports.user_create_post = [
                         username: req.body.username,
                         password: hashedPassword,
                         isAuthor: false,
-                        img: ''
+                        img: 'https://res.cloudinary.com/db1f4tqbr/image/upload/v1697657133/DEV/dz202vf08uo5hqdygl0c.png'
                     });
 
                     await user.save();
